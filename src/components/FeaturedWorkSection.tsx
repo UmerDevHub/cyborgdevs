@@ -9,6 +9,7 @@ interface Project {
   title: string;
   description: string;
   image: string;
+  imagePosition?: string;
   tags: string[];
 }
 
@@ -20,6 +21,7 @@ const projects: Project[] = [
     description:
       "A comprehensive analytics platform that helps businesses make data-driven decisions.",
     image: "/images/project-1.jpg",
+    imagePosition: "object-top",
     tags: ["React", "Node.js", "PostgreSQL"],
   },
   {
@@ -28,7 +30,8 @@ const projects: Project[] = [
     title: "FinTrack Mobile App",
     description:
       "A modern finance tracking app with budgeting, analytics, and smart insights.",
-    image: "/images/project-2.jpg",
+    image: "/images/project-2.png",
+    imagePosition: "object-top",
     tags: ["Flutter", "Firebase", "Dart"],
   },
   {
@@ -37,7 +40,8 @@ const projects: Project[] = [
     title: "Luxury Watch Store",
     description:
       "A premium e-commerce experience for a luxury watch brand.",
-    image: "/images/project-3.jpg",
+    image: "/images/project-3.png",
+    imagePosition: "object-center",
     tags: ["Next.js", "Stripe", "Tailwind CSS"],
   },
 ];
