@@ -78,87 +78,152 @@ export default function TestimonialsSection() {
   const mainCardRef = useRef<HTMLDivElement>(null);
   const rightCardsRef = useRef<HTMLDivElement>(null);
   const shadowOverlayRef = useRef<HTMLDivElement>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const progressTweenRef = useRef<gsap.core.Tween | null>(null);
 
-  // Auto-play book page fold every 5.5 seconds
-  const startAutoPlay = () => {
-    if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
-    autoPlayTimerRef.current = setInterval(() => {
-      turnPage("next", (currentIndex + 1) % reviewsData.length);
-    }, 5500);
+  // 3.5-second auto-play cycle with visual countdown progress bar
+  const startProgressAndTimer = () => {
+    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+    if (progressTweenRef.current) progressTweenRef.current.kill();
+
+    if (progressBarRef.current) {
+      gsap.set(progressBarRef.current, { width: "0%" });
+      progressTweenRef.current = gsap.to(progressBarRef.current, {
+        width: "100%",
+        duration: 3.5,
+        ease: "none",
+      });
+    }
+
+    autoPlayTimerRef.current = setTimeout(() => {
+      turnPageAdvanced("next", (currentIndex + 1) % reviewsData.length);
+    }, 3500);
   };
 
   useEffect(() => {
-    startAutoPlay();
+    startProgressAndTimer();
     return () => {
-      if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+      if (progressTweenRef.current) progressTweenRef.current.kill();
     };
   }, [currentIndex]);
 
-  // Physical 3D Book Page Fold and Unfold Sequence
-  const turnPage = (direction: "next" | "prev", nextIdx: number) => {
+  // Pause on hover, resume on leave
+  const handleMouseEnter = () => {
+    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+    if (progressTweenRef.current) progressTweenRef.current.pause();
+  };
+
+  const handleMouseLeave = () => {
+    if (progressTweenRef.current) progressTweenRef.current.resume();
+    // Restart remaining timer or start fresh
+    startProgressAndTimer();
+  };
+
+  // ── ADVANCED 3D PHYSICAL BOOK PAGE CURL, FOLD & UNFOLD ──────────
+  const turnPageAdvanced = (direction: "next" | "prev", nextIdx: number) => {
     if (isAnimating || !mainCardRef.current) return;
     setIsAnimating(true);
 
     const card = mainCardRef.current;
     const shadow = shadowOverlayRef.current;
-    const foldAngle = direction === "next" ? -84 : 84;
-    const unfoldAngle = direction === "next" ? 84 : -84;
-    const origin = direction === "next" ? "left center" : "right center";
+    const glare = glareRef.current;
+    const isForward = direction === "next";
+    const origin = isForward ? "left center" : "right center";
 
     gsap.set(card, { transformOrigin: origin });
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsAnimating(false);
-        gsap.set(card, { clearProps: "transform,boxShadow" });
+        gsap.set(card, { clearProps: "transform,boxShadow,z" });
         if (shadow) gsap.set(shadow, { opacity: 0 });
+        if (glare) gsap.set(glare, { opacity: 0, x: "-100%" });
       },
     });
 
-    // ── Phase 1: Physical Book Page Folds Closed (0.33s) ──────
+    // ── STAGE 1: Corner Curl & Thumb Page Lift (0.0s ➔ 0.18s) ────
     tl.to(
       card,
       {
-        rotationY: foldAngle,
-        scale: 0.94,
-        boxShadow:
-          direction === "next"
-            ? "-28px 8px 45px rgba(0,0,0,0.22)"
-            : "28px 8px 45px rgba(0,0,0,0.22)",
-        duration: 0.33,
-        ease: "power2.in",
+        rotationY: isForward ? -28 : 28,
+        rotationZ: isForward ? -3.5 : 3.5,
+        skewY: isForward ? -1.8 : 1.8,
+        z: 40,
+        scale: 0.98,
+        boxShadow: isForward
+          ? "-16px 6px 30px rgba(0,0,0,0.14)"
+          : "16px 6px 30px rgba(0,0,0,0.14)",
+        duration: 0.18,
+        ease: "power1.inOut",
       },
       0
+    );
+
+    // Specular paper reflection glides across
+    if (glare) {
+      tl.fromTo(
+        glare,
+        { x: isForward ? "-80%" : "120%", opacity: 0 },
+        { x: isForward ? "40%" : "-40%", opacity: 0.55, duration: 0.22, ease: "power1.inOut" },
+        0
+      );
+    }
+
+    // ── STAGE 2: Deep 3D Arch & Mid-Air Fold Across Spine (0.18s ➔ 0.38s) ──
+    tl.to(
+      card,
+      {
+        rotationY: isForward ? -88 : 88,
+        rotationZ: isForward ? -1.2 : 1.2,
+        skewY: isForward ? -0.8 : 0.8,
+        z: 75,
+        scale: 0.91,
+        boxShadow: isForward
+          ? "-36px 12px 55px rgba(0,0,0,0.28)"
+          : "36px 12px 55px rgba(0,0,0,0.28)",
+        duration: 0.2,
+        ease: "power2.in",
+      },
+      0.18
     );
 
     if (shadow) {
       tl.to(
         shadow,
         {
-          opacity: 0.32,
-          duration: 0.33,
+          opacity: 0.42,
+          duration: 0.2,
           ease: "power2.in",
         },
-        0
+        0.18
       );
     }
 
-    // ── Halfway Point: Switch content at the spine ────────────
+    // ── MIDPOINT (0.38s): Page flips onto next leaf at the spine ──
     tl.call(() => {
       setCurrentIndex(nextIdx);
       gsap.set(card, {
-        rotationY: unfoldAngle,
+        rotationY: isForward ? 88 : -88,
+        rotationZ: isForward ? 1.5 : -1.5,
+        skewY: isForward ? 0.8 : -0.8,
+        z: 75,
+        scale: 0.91,
         transformOrigin: origin,
       });
     });
 
-    // ── Phase 2: Physical Book Page Unfolds Flat (0.38s) ──────
+    // ── STAGE 3: Page Unfolds Across Open Spread (0.38s ➔ 0.68s) ──
     tl.to(card, {
-      rotationY: 0,
-      scale: 1,
-      boxShadow: "0px 10px 35px rgba(0,0,0,0.04)",
-      duration: 0.38,
+      rotationY: isForward ? -2.5 : 2.5,
+      rotationZ: isForward ? -0.4 : 0.4,
+      skewY: 0,
+      z: 12,
+      scale: 0.995,
+      boxShadow: "0px 14px 40px rgba(0,0,0,0.06)",
+      duration: 0.3,
       ease: "power2.out",
     });
 
@@ -167,20 +232,44 @@ export default function TestimonialsSection() {
         shadow,
         {
           opacity: 0,
-          duration: 0.38,
+          duration: 0.3,
           ease: "power2.out",
         },
-        "-=0.38"
+        "-=0.3"
       );
     }
 
-    // Secondary cards gentle page reveal
+    if (glare) {
+      tl.to(
+        glare,
+        {
+          x: isForward ? "140%" : "-140%",
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.out",
+        },
+        "-=0.25"
+      );
+    }
+
+    // ── STAGE 4: Tactile Paper Settle & Rebound (0.68s ➔ 0.82s) ──
+    tl.to(card, {
+      rotationY: 0,
+      rotationZ: 0,
+      z: 0,
+      scale: 1,
+      boxShadow: "0px 10px 35px rgba(0,0,0,0.04)",
+      duration: 0.14,
+      ease: "sine.out",
+    });
+
+    // Secondary cards organic nudge
     if (rightCardsRef.current) {
       tl.fromTo(
         rightCardsRef.current,
         {
-          x: direction === "next" ? 18 : -18,
-          opacity: 0.6,
+          x: isForward ? 22 : -22,
+          opacity: 0.5,
         },
         {
           x: 0,
@@ -188,7 +277,7 @@ export default function TestimonialsSection() {
           duration: 0.42,
           ease: "power2.out",
         },
-        0.33
+        0.38
       );
     }
   };
@@ -196,18 +285,15 @@ export default function TestimonialsSection() {
   const handleNext = () => {
     if (isAnimating) return;
     const nextIdx = (currentIndex + 1) % reviewsData.length;
-    turnPage("next", nextIdx);
-    startAutoPlay();
+    turnPageAdvanced("next", nextIdx);
   };
 
   const handlePrev = () => {
     if (isAnimating) return;
     const prevIdx = (currentIndex - 1 + reviewsData.length) % reviewsData.length;
-    turnPage("prev", prevIdx);
-    startAutoPlay();
+    turnPageAdvanced("prev", prevIdx);
   };
 
-  // Preview reviews for the secondary cards
   const currentReview = reviewsData[currentIndex];
   const nextReview1 = reviewsData[(currentIndex + 1) % reviewsData.length];
   const nextReview2 = reviewsData[(currentIndex + 2) % reviewsData.length];
@@ -265,15 +351,15 @@ export default function TestimonialsSection() {
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: WHAT OUR CLIENTS SAY (BOOK PAGE FOLD/UNFOLD) ── */}
+          {/* ── RIGHT COLUMN: WHAT OUR CLIENTS SAY (ADVANCED 3.5S BOOK FOLD) ── */}
           <div className="lg:col-span-7 flex flex-col justify-start w-full">
-            {/* Header row with arrows & page indicator */}
+            {/* Header row with arrows & animated 3.5s page indicator */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase">
                   WHAT OUR CLIENTS SAY
                 </span>
-                <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400 bg-zinc-100/80 px-2.5 py-0.5 rounded-full">
+                <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 bg-zinc-100/90 px-2.5 py-0.5 rounded-full">
                   <BookOpen className="w-3 h-3 text-[#0066FF]" />
                   Page {currentIndex + 1} of {reviewsData.length}
                 </span>
@@ -302,16 +388,15 @@ export default function TestimonialsSection() {
               </div>
             </div>
 
-            {/* 3D Book Stage Container */}
+            {/* 3D Book Stage Container with Perspective */}
             <div
               className="relative w-full"
-              style={{ perspective: "1500px" }}
-              onMouseEnter={() => autoPlayTimerRef.current && clearInterval(autoPlayTimerRef.current)}
-              onMouseLeave={startAutoPlay}
+              style={{ perspective: "1600px" }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
               <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
-                
-                {/* 1. Main Book Page Review Card (Folds and Unfolds in 3D) */}
+                {/* 1. Main Book Page Review Card (Peels, Curls, Folds & Unfolds in 3D) */}
                 <div
                   ref={mainCardRef}
                   className="md:col-span-7 relative flex flex-col justify-between rounded-[24px] border border-zinc-200/80 bg-white p-7 sm:p-8 shadow-[0_10px_35px_rgba(0,0,0,0.04)] overflow-hidden min-h-[320px] select-none"
@@ -320,20 +405,35 @@ export default function TestimonialsSection() {
                     willChange: "transform, box-shadow",
                   }}
                 >
-                  {/* Spine Crease on Left Edge */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-gradient-to-r from-zinc-200/60 via-zinc-100/30 to-transparent pointer-events-none" />
+                  {/* Visual Book Spine Crease on Left Edge */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[8px] bg-gradient-to-r from-zinc-200/70 via-zinc-100/30 to-transparent pointer-events-none z-20" />
 
-                  {/* Top electric blue bookmark line */}
-                  <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#0066FF]" />
+                  {/* Top 3.5-second live countdown reading progress bar */}
+                  <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-zinc-100 overflow-hidden z-30">
+                    <div
+                      ref={progressBarRef}
+                      className="h-full bg-[#0066FF] w-0 transition-none"
+                    />
+                  </div>
 
-                  {/* Dynamic folding shadow overlay that sweeps during turn */}
+                  {/* Dynamic Curled Paper Lighting Sheen Overlay */}
+                  <div
+                    ref={glareRef}
+                    className="pointer-events-none absolute inset-0 z-30 opacity-0 -translate-x-full"
+                    style={{
+                      background:
+                        "linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.65) 50%, transparent 80%)",
+                    }}
+                  />
+
+                  {/* Dynamic Folding Crease Shadow */}
                   <div
                     ref={shadowOverlayRef}
-                    className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-r from-black/0 via-black/10 to-black/25 opacity-0 transition-opacity"
+                    className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-r from-black/0 via-black/10 to-black/30 opacity-0 transition-opacity"
                   />
 
                   {/* Large Quote Content */}
-                  <div className="relative z-10 mb-8 pl-1">
+                  <div className="relative z-10 mb-8 pl-1 pt-2">
                     <p className="text-[17px] sm:text-[19px] font-medium leading-[1.58] text-zinc-900 tracking-tight italic">
                       &ldquo;{currentReview.quote}&rdquo;
                     </p>
@@ -377,8 +477,7 @@ export default function TestimonialsSection() {
                   {/* Secondary Card 1 */}
                   <div
                     onClick={() => {
-                      turnPage("next", (currentIndex + 1) % reviewsData.length);
-                      startAutoPlay();
+                      turnPageAdvanced("next", (currentIndex + 1) % reviewsData.length);
                     }}
                     className="flex flex-col justify-between rounded-[22px] border border-zinc-200/80 bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.03)] hover:border-zinc-300 hover:shadow-md transition-all cursor-pointer group"
                   >
@@ -422,8 +521,7 @@ export default function TestimonialsSection() {
                   {/* Secondary Card 2 */}
                   <div
                     onClick={() => {
-                      turnPage("next", (currentIndex + 2) % reviewsData.length);
-                      startAutoPlay();
+                      turnPageAdvanced("next", (currentIndex + 2) % reviewsData.length);
                     }}
                     className="flex flex-col justify-between rounded-[22px] border border-zinc-200/80 bg-white p-6 shadow-[0_8px_25px_rgba(0,0,0,0.03)] hover:border-zinc-300 hover:shadow-md transition-all cursor-pointer group"
                   >
@@ -464,7 +562,6 @@ export default function TestimonialsSection() {
                     </div>
                   </div>
                 </div>
-
               </div>
 
               {/* Pagination Dots Indicator */}
@@ -475,8 +572,7 @@ export default function TestimonialsSection() {
                     type="button"
                     onClick={() => {
                       if (idx !== currentIndex && !isAnimating) {
-                        turnPage(idx > currentIndex ? "next" : "prev", idx);
-                        startAutoPlay();
+                        turnPageAdvanced(idx > currentIndex ? "next" : "prev", idx);
                       }
                     }}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
