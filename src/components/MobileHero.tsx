@@ -168,7 +168,7 @@ export default function MobileHero() {
     <section
       ref={containerRef}
       className="relative min-h-screen w-full overflow-hidden bg-black font-sans text-white select-none"
-      style={{ fontFamily: "var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif)" }}
+      style={{ fontFamily: "var(--font-inter-tight, 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif)" }}
     >
       {/* ── FULL-SCREEN WEBSITE LOADER ─────────────────────────── */}
       {isLoaderActive && (
