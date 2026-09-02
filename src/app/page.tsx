@@ -6,6 +6,8 @@ import TechnologiesSection from "@/components/TechnologiesSection";
 import AiDevelopmentSection from "@/components/AiDevelopmentSection";
 import ProcessSection from "@/components/ProcessSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import CtaSection from "@/components/CtaSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -37,6 +39,12 @@ export default function Home() {
 
       {/* Why Choose Us & Testimonials Reviews Section */}
       <TestimonialsSection />
+
+      {/* Call to Action Banner (Desktop cta_back.png & Mobile cta_mob.png) */}
+      <CtaSection />
+
+      {/* Global Agency Footer */}
+      <Footer />
     </main>
   );
 }

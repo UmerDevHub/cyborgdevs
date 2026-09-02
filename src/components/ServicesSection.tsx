@@ -201,14 +201,14 @@ export default function ServicesSection() {
   return (
     <section
       id="services"
-      className="relative w-full bg-white text-zinc-900 py-16 sm:py-20 lg:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden"
+      className="relative w-full bg-white text-zinc-900 py-10 sm:py-12 lg:py-16 px-5 sm:px-10 lg:px-16 overflow-hidden"
     >
       {/* Background divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1px] bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
 
       <div className="max-w-[1520px] mx-auto">
         {/* ── HEADER AREA ───────────────────────────────────────── */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 lg:mb-20 gap-4 sm:gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 sm:mb-10 lg:mb-12 gap-4 sm:gap-6">
           <div>
             {/* Tag / Category */}
             <span className="inline-block text-[#0066FF] text-[11.5px] sm:text-[12px] font-bold tracking-[0.22em] uppercase mb-2.5 sm:mb-3.5">
@@ -332,7 +332,7 @@ export default function ServicesSection() {
         {/* ── BOTTOM METRICS & TRUSTED BRANDS BAR ───────────────── */}
         <div
           ref={metricsRef}
-          className="mt-12 sm:mt-16 lg:mt-20 rounded-[20px] sm:rounded-[22px] bg-[#f8f9fb] border border-zinc-200/80 p-6 sm:p-10 lg:p-12 shadow-[0_4px_24px_rgba(0,0,0,0.02)]"
+          className="mt-8 sm:mt-10 lg:mt-12 rounded-[20px] sm:rounded-[22px] bg-[#f8f9fb] border border-zinc-200/80 p-6 sm:p-8 lg:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.02)]"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
             {/* Left: 4 Animated Metrics Counters */}
