@@ -1,6 +1,7 @@
 import MobileHero from "@/components/MobileHero";
 import DesktopHero from "@/components/DesktopHero";
 import ServicesSection from "@/components/ServicesSection";
+import FeaturedWorkSection from "@/components/FeaturedWorkSection";
 
 export default function Home() {
   return (
@@ -17,6 +18,9 @@ export default function Home() {
 
       {/* Services & Metrics Section */}
       <ServicesSection />
+
+      {/* Featured Work / Case Studies Section */}
+      <FeaturedWorkSection />
     </main>
   );
 }
