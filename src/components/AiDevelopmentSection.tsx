@@ -8,26 +8,26 @@ export default function AiDevelopmentSection() {
   return (
     <section
       id="solutions"
-      className="relative w-full bg-white text-zinc-900 py-20 lg:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
+      className="relative w-full bg-white text-zinc-900 py-10 sm:py-12 lg:py-16 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
     >
       <div className="max-w-[1520px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
           {/* ── LEFT COLUMN: TEXT CONTENT ─────────────────────────── */}
           <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center z-10">
             {/* Category badge */}
-            <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase mb-3">
+            <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase mb-2.5">
               AI DEVELOPMENT
             </span>
 
             {/* Main Headline */}
-            <h2 className="text-[34px] sm:text-[42px] lg:text-[46px] font-extrabold tracking-tight text-zinc-950 leading-[1.12] mb-4 sm:mb-5">
+            <h2 className="text-[34px] sm:text-[42px] lg:text-[46px] font-extrabold tracking-tight text-zinc-950 leading-[1.12] mb-3.5 sm:mb-4">
               Turn AI into a <br className="hidden sm:inline" />
               competitive advantage.
             </h2>
 
             {/* Description */}
-            <p className="text-[14.5px] sm:text-[15.5px] font-normal leading-relaxed text-zinc-500 max-w-[440px] mb-8 sm:mb-9">
+            <p className="text-[14.5px] sm:text-[15.5px] font-normal leading-relaxed text-zinc-500 max-w-[440px] mb-6 sm:mb-7">
               We build intelligent AI solutions that automate processes, enhance
               experiences, and unlock new opportunities for your business.
             </p>

@@ -36,7 +36,7 @@ export default function CtaSection() {
       </div>
 
       {/* ── CONTENT CONTAINER ─────────────────────────────────── */}
-      <div className="relative z-10 max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-24 lg:py-28">
+      <div className="relative z-10 max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-16 py-12 sm:py-14 lg:py-16">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 lg:gap-14">
           
           {/* Left Text Block */}

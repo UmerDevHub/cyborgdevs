@@ -60,11 +60,11 @@ export default function ProcessSection() {
   return (
     <section
       id="process"
-      className="relative w-full bg-white text-zinc-900 py-20 lg:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
+      className="relative w-full bg-white text-zinc-900 py-10 sm:py-12 lg:py-16 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
     >
       <div className="max-w-[1520px] mx-auto">
         {/* ── HEADER ROW ────────────────────────────────────────── */}
-        <div className="mb-14 sm:mb-20">
+        <div className="mb-8 sm:mb-10">
           {/* Category tag */}
           <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase mb-3">
             OUR PROCESS

@@ -301,19 +301,19 @@ export default function TestimonialsSection() {
   return (
     <section
       id="about"
-      className="relative w-full bg-white text-zinc-900 py-20 lg:py-28 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
+      className="relative w-full bg-white text-zinc-900 py-10 sm:py-12 lg:py-16 px-5 sm:px-10 lg:px-16 overflow-hidden border-t border-zinc-100"
     >
       <div className="max-w-[1520px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* ── LEFT COLUMN: WHY CHOOSE US ─────────────────────────── */}
           <div className="lg:col-span-5 flex flex-col justify-start">
             {/* Category badge */}
-            <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase mb-3">
+            <span className="inline-block text-[#0066FF] text-[12px] font-bold tracking-[0.22em] uppercase mb-2.5">
               WHY CHOOSE US
             </span>
 
             {/* Main Headline */}
-            <h2 className="text-[34px] sm:text-[42px] lg:text-[48px] font-extrabold tracking-tight text-zinc-950 leading-[1.12] mb-8 sm:mb-10">
+            <h2 className="text-[34px] sm:text-[42px] lg:text-[48px] font-extrabold tracking-tight text-zinc-950 leading-[1.12] mb-6 sm:mb-8">
               Not another <br />
               development <br />
               agency.

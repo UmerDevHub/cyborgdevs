@@ -157,6 +157,56 @@ export default function ServicesSection() {
   const [hasCounted, setHasCounted] = useState(false);
   const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
   const metricsRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const cardElementsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
+  // Handle responsive scroll animations:
+  // - On Mobile: Alternating left (01, 03, 05) and right (02, 04, 06) as user scrolls down
+  // - On Desktop: High-level professional alternating top and bottom entrance with stagger
+  useEffect(() => {
+    const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
+
+    if (isDesktop) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisibleCards([true, true, true, true, true, true]);
+          }
+        },
+        { threshold: 0.12 }
+      );
+      if (cardsContainerRef.current) observer.observe(cardsContainerRef.current);
+      return () => observer.disconnect();
+    } else {
+      const observers: IntersectionObserver[] = [];
+      cardElementsRef.current.forEach((el, idx) => {
+        if (!el) return;
+        const obs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setVisibleCards((prev) => {
+                const updated = [...prev];
+                updated[idx] = true;
+                return updated;
+              });
+            }
+          },
+          { threshold: 0.15 }
+        );
+        obs.observe(el);
+        observers.push(obs);
+      });
+      return () => observers.forEach((obs) => obs.disconnect());
+    }
+  }, [showAllMobile]);
 
   // Smooth live counter effect when scrolled into view
   useEffect(() => {
@@ -198,6 +248,15 @@ export default function ServicesSection() {
     return () => observer.disconnect();
   }, [hasCounted]);
 
+  const staggerDelays = [
+    "lg:delay-[60ms]",
+    "lg:delay-[160ms]",
+    "lg:delay-[260ms]",
+    "lg:delay-[360ms]",
+    "lg:delay-[460ms]",
+    "lg:delay-[560ms]",
+  ];
+
   return (
     <section
       id="services"
@@ -228,19 +287,37 @@ export default function ServicesSection() {
         </div>
 
         {/* ── 6 SERVICES CARDS (3 on Mobile with "See More", 6 on Laptop/Desktop) ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 border-y border-zinc-200/80 bg-white">
+        <div
+          ref={cardsContainerRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 border-y border-zinc-200/80 bg-white overflow-hidden"
+        >
           {services.map((item, index) => {
             const Icon = item.icon;
             const isActive = activeCard === item.id;
             // On mobile (< 1024px), hide services after the first 3 unless showAllMobile is true
             const isHiddenOnMobile = index >= 3 && !showAllMobile;
+            const isVisible = visibleCards[index];
+
+            // Entrance motion:
+            // Mobile: Even index from left, Odd index from right
+            // Desktop: Even index from top, Odd index from bottom with stagger delay
+            const entranceMotion = isVisible
+              ? "opacity-100 translate-x-0 translate-y-0 scale-100"
+              : index % 2 === 0
+              ? "-translate-x-16 lg:translate-x-0 lg:-translate-y-16 opacity-0 scale-[0.96]"
+              : "translate-x-16 lg:translate-x-0 lg:translate-y-16 opacity-0 scale-[0.96]";
 
             return (
               <div
                 key={item.id}
+                ref={(el) => {
+                  cardElementsRef.current[index] = el;
+                }}
                 onMouseEnter={() => setActiveCard(item.id)}
                 onClick={() => setActiveCard(item.id)}
-                className={`group relative flex-col justify-between p-6 sm:p-7 lg:p-8 cursor-pointer transition-all duration-300 ${
+                className={`group relative flex-col justify-between p-6 sm:p-7 lg:p-8 cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  staggerDelays[index]
+                } ${entranceMotion} ${
                   isHiddenOnMobile ? "hidden lg:flex" : "flex"
                 } ${
                   index !== services.length - 1
