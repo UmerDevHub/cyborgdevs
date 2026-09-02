@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -8,65 +8,139 @@ import { ChevronDown } from "lucide-react";
 
 export default function MobileHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoaderActive, setIsLoaderActive] = useState(true);
+  const targetLogoRef = useRef<HTMLDivElement>(null);
+  const loaderOverlayRef = useRef<HTMLDivElement>(null);
+  const loaderLogoRef = useRef<HTMLDivElement>(null);
+  const rotateTweenRef = useRef<gsap.core.Tween | null>(null);
 
   useGSAP(
     () => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      if (!loaderLogoRef.current || !loaderOverlayRef.current) return;
 
-      // 1. Navbar entrance
-      tl.fromTo(
-        ".hero-nav",
-        { opacity: 0, y: -18 },
-        { opacity: 1, y: 0, duration: 0.6 }
-      );
+      // 1. Continuous smooth 360° rotation (2.0s per full turn)
+      rotateTweenRef.current = gsap.to(loaderLogoRef.current, {
+        rotation: 360,
+        duration: 2.0,
+        ease: "none",
+        repeat: -1,
+      });
 
-      // 2. Tagline entrance
-      tl.fromTo(
-        ".hero-tagline",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.45 },
-        "-=0.2"
-      );
+      // 2. Subtle soft glow / pulse around the logo for premium tech feel
+      gsap.to(loaderLogoRef.current, {
+        filter: "drop-shadow(0 0 26px rgba(0, 102, 255, 0.6))",
+        duration: 1.0,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
 
-      // 3. Headline stagger
-      tl.fromTo(
-        ".hero-headline-line",
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.55, stagger: 0.12 },
-        "-=0.25"
-      );
+      // 3. Minimum 2 seconds loading duration before smooth transition
+      const timer = setTimeout(() => {
+        if (!targetLogoRef.current || !loaderLogoRef.current || !loaderOverlayRef.current) return;
 
-      // 4. Description paragraph
-      tl.fromTo(
-        ".hero-description",
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.45 },
-        "-=0.2"
-      );
+        // Calculate target and loader rects for fluid morph to navbar
+        const targetRect = targetLogoRef.current.getBoundingClientRect();
+        const loaderRect = loaderLogoRef.current.getBoundingClientRect();
 
-      // 5. Buttons stagger
-      tl.fromTo(
-        ".hero-btn",
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 },
-        "-=0.2"
-      );
+        const targetCenterX = targetRect.left + targetRect.width / 2;
+        const targetCenterY = targetRect.top + targetRect.height / 2;
+        const loaderCenterX = loaderRect.left + loaderRect.width / 2;
+        const loaderCenterY = loaderRect.top + loaderRect.height / 2;
 
-      // 6. Scroll indicator
-      tl.fromTo(
-        ".hero-scroll",
-        { opacity: 0 },
-        { opacity: 1, duration: 0.45 },
-        "-=0.1"
-      );
+        const deltaX = targetCenterX - loaderCenterX;
+        const deltaY = targetCenterY - loaderCenterY;
+        const targetScale = targetRect.height / loaderRect.height;
 
-      // 7. Stats bar entrance
-      tl.fromTo(
-        ".hero-stats",
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.55 },
-        "-=0.25"
-      );
+        // Gracefully finish current rotation into upright position
+        if (rotateTweenRef.current) {
+          rotateTweenRef.current.kill();
+        }
+        const currentRot = (gsap.getProperty(loaderLogoRef.current, "rotation") as number) || 0;
+        const finalRot = Math.ceil(currentRot / 360) * 360;
+
+        const masterTl = gsap.timeline({
+          onComplete: () => {
+            setIsLoaderActive(false);
+          },
+        });
+
+        // Rotating logo smoothly scales down + glides to navbar position
+        masterTl.to(loaderLogoRef.current, {
+          x: deltaX,
+          y: deltaY,
+          scale: targetScale,
+          rotation: finalRot,
+          duration: 0.95,
+          ease: "power3.inOut",
+        }, 0);
+
+        // Dark loader background elegantly fades out
+        masterTl.to(loaderOverlayRef.current, {
+          opacity: 0,
+          duration: 0.85,
+          ease: "power2.inOut",
+        }, 0.1);
+
+        // Navbar right side fades in
+        masterTl.fromTo(".hero-nav-items", {
+          opacity: 0,
+          y: -15,
+        }, {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          ease: "power3.out",
+        }, 0.5);
+
+        // Hero tagline entrance
+        masterTl.fromTo(
+          ".hero-tagline",
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+          0.65
+        );
+
+        // Main headline stagger
+        masterTl.fromTo(
+          ".hero-headline-line",
+          { opacity: 0, y: 35 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.12, ease: "power3.out" },
+          0.75
+        );
+
+        // Description
+        masterTl.fromTo(
+          ".hero-description",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+          0.9
+        );
+
+        // Buttons
+        masterTl.fromTo(
+          ".hero-btn",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power3.out" },
+          1.0
+        );
+
+        // Scroll indicator
+        masterTl.fromTo(
+          ".hero-scroll",
+          { opacity: 0 },
+          { opacity: 1, duration: 0.45, ease: "power3.out" },
+          1.1
+        );
+
+        // Bottom stats bar
+        masterTl.fromTo(
+          ".hero-stats",
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+          1.15
+        );
+      }, 2000);
 
       // Micro-animations: continuous bouncing chevron & mouse dot
       gsap.to(".scroll-dot", {
@@ -84,6 +158,8 @@ export default function MobileHero() {
         yoyo: true,
         ease: "power1.inOut",
       });
+
+      return () => clearTimeout(timer);
     },
     { scope: containerRef }
   );
@@ -94,6 +170,33 @@ export default function MobileHero() {
       className="relative min-h-screen w-full overflow-hidden bg-black font-sans text-white select-none"
       style={{ fontFamily: "var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif)" }}
     >
+      {/* ── FULL-SCREEN WEBSITE LOADER ─────────────────────────── */}
+      {isLoaderActive && (
+        <div
+          ref={loaderOverlayRef}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#050608] pointer-events-auto"
+        >
+          <div
+            ref={loaderLogoRef}
+            className="relative flex items-center justify-center"
+            style={{
+              transformOrigin: "center center",
+              filter: "drop-shadow(0 0 20px rgba(0, 102, 255, 0.45))",
+              willChange: "transform, opacity, filter",
+            }}
+          >
+            <Image
+              src="/images/logo.png"
+              alt="Loading CD Monogram Logo"
+              width={140}
+              height={60}
+              className="h-[60px] w-auto object-contain select-none pointer-events-none"
+              priority
+            />
+          </div>
+        </div>
+      )}
+
       {/* ── BACKGROUND IMAGE ────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -118,9 +221,13 @@ export default function MobileHero() {
       <div className="relative z-10 flex min-h-screen flex-col justify-between px-5 pb-9 pt-6">
 
         {/* ── TOP HEADER / NAVBAR ───────────────────────────────── */}
-        <header className="hero-nav flex items-center justify-between opacity-0">
+        <header className="hero-nav flex items-center justify-between">
           {/* Top-left: Clean transparent CD monogram logo (28-30px height) */}
-          <div className="relative flex items-center">
+          <div
+            ref={targetLogoRef}
+            className="relative flex items-center transition-opacity duration-150"
+            style={{ opacity: isLoaderActive ? 0 : 1 }}
+          >
             <Image
               src="/images/logo.png"
               alt="CD Monogram Logo"
@@ -132,7 +239,7 @@ export default function MobileHero() {
           </div>
 
           {/* Top-right: MENU + hamburger icon (13px, white) */}
-          <div className="flex items-center gap-2 cursor-pointer">
+          <div className="hero-nav-items flex items-center gap-2 cursor-pointer opacity-0">
             <span
               className="text-[13px] font-semibold uppercase tracking-[0.14em] text-white"
             >
