@@ -20,7 +20,7 @@ const projects: Project[] = [
     title: "Analytics Dashboard",
     description:
       "A comprehensive analytics platform that helps businesses make data-driven decisions.",
-    image: "/images/project-1.jpg",
+    image: "/images/project-1.png",
     imagePosition: "object-top",
     tags: ["React", "Node.js", "PostgreSQL"],
   },

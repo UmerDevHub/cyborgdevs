@@ -2,6 +2,7 @@ import MobileHero from "@/components/MobileHero";
 import DesktopHero from "@/components/DesktopHero";
 import ServicesSection from "@/components/ServicesSection";
 import FeaturedWorkSection from "@/components/FeaturedWorkSection";
+import TechnologiesSection from "@/components/TechnologiesSection";
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
 
       {/* Featured Work / Case Studies Section */}
       <FeaturedWorkSection />
+
+      {/* Technologies Section */}
+      <TechnologiesSection />
     </main>
   );
 }
