@@ -18,10 +18,10 @@ export default function MobileHero() {
     () => {
       if (!loaderLogoRef.current || !loaderOverlayRef.current) return;
 
-      // 1. Continuous smooth 360° rotation (1.0s per full turn)
+      // 1. Continuous smooth 360° rotation (0.5s per full turn)
       rotateTweenRef.current = gsap.to(loaderLogoRef.current, {
         rotation: 360,
-        duration: 1.0,
+        duration: 0.5,
         ease: "none",
         repeat: -1,
       });
@@ -29,13 +29,13 @@ export default function MobileHero() {
       // 2. Subtle soft glow / pulse around the logo for premium tech feel
       gsap.to(loaderLogoRef.current, {
         filter: "drop-shadow(0 0 26px rgba(0, 102, 255, 0.6))",
-        duration: 1.0,
+        duration: 0.5,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       });
 
-      // 3. Minimum 2 seconds loading duration before smooth transition
+      // 3. Exactly 0.5s splash duration before smooth transition
       const timer = setTimeout(() => {
         if (!targetLogoRef.current || !loaderLogoRef.current || !loaderOverlayRef.current) return;
 
@@ -71,16 +71,16 @@ export default function MobileHero() {
           y: deltaY,
           scale: targetScale,
           rotation: finalRot,
-          duration: 0.95,
+          duration: 0.75,
           ease: "power3.inOut",
         }, 0);
 
         // Dark loader background elegantly fades out
         masterTl.to(loaderOverlayRef.current, {
           opacity: 0,
-          duration: 0.85,
+          duration: 0.65,
           ease: "power2.inOut",
-        }, 0.1);
+        }, 0.08);
 
         // Navbar right side fades in
         masterTl.fromTo(".hero-nav-items", {
@@ -89,58 +89,58 @@ export default function MobileHero() {
         }, {
           opacity: 1,
           y: 0,
-          duration: 0.55,
+          duration: 0.45,
           ease: "power3.out",
-        }, 0.5);
+        }, 0.3);
 
         // Hero tagline entrance
         masterTl.fromTo(
           ".hero-tagline",
           { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
-          0.65
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          0.4
         );
 
         // Main headline stagger
         masterTl.fromTo(
           ".hero-headline-line",
           { opacity: 0, y: 35 },
-          { opacity: 1, y: 0, duration: 0.55, stagger: 0.12, ease: "power3.out" },
-          0.75
+          { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: "power3.out" },
+          0.48
         );
 
         // Description
         masterTl.fromTo(
           ".hero-description",
           { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
-          0.9
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          0.6
         );
 
         // Buttons
         masterTl.fromTo(
           ".hero-btn",
           { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power3.out" },
-          1.0
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.08, ease: "power3.out" },
+          0.68
         );
 
         // Scroll indicator
         masterTl.fromTo(
           ".hero-scroll",
           { opacity: 0 },
-          { opacity: 1, duration: 0.45, ease: "power3.out" },
-          1.1
+          { opacity: 1, duration: 0.4, ease: "power3.out" },
+          0.75
         );
 
         // Bottom stats bar
         masterTl.fromTo(
           ".hero-stats",
           { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
-          1.15
+          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+          0.8
         );
-      }, 1000);
+      }, 500);
 
       // Micro-animations: continuous bouncing chevron & mouse dot
       gsap.to(".scroll-dot", {
@@ -217,12 +217,12 @@ export default function MobileHero() {
         />
       </div>
 
-      {/* ── MAIN CONTENT WRAPPER (calibrated for 100dvh tall phones) ── */}
-      <div className="relative z-10 flex min-h-[100dvh] flex-col justify-between px-6 pb-7 pt-5">
+      {/* ── MAIN CONTENT WRAPPER ───────────────────────────────── */}
+      <div className="relative z-10 flex min-h-screen flex-col justify-between px-5 pb-9 pt-6">
 
         {/* ── TOP HEADER / NAVBAR ───────────────────────────────── */}
         <header className="hero-nav flex items-center justify-between">
-          {/* Top-left: Clean transparent CD monogram logo (28px height) */}
+          {/* Top-left: Clean transparent CD monogram logo (28-30px height) */}
           <div
             ref={targetLogoRef}
             className="relative flex items-center transition-opacity duration-150"
@@ -257,13 +257,13 @@ export default function MobileHero() {
         </header>
 
         {/* ── SPACER: Keeps person's head & monitors 100% visible & uncovered ── */}
-        <div className="flex-1 min-h-[14vh] max-h-[22vh]" />
+        <div className="flex-1 min-h-[35vh]" />
 
-        {/* ── HERO CONTENT (tight, balanced vertical rhythm, thumb zone) ── */}
-        <div className="flex flex-col pb-1">
+        {/* ── HERO CONTENT (positioned lower, left-aligned, max-width ~290px) ── */}
+        <div className="flex flex-col pb-2">
 
-          {/* 1. Small label: Blue dot + uppercase text (10-11px, medium weight) */}
-          <div className="hero-tagline mb-2 flex items-center gap-2 opacity-0">
+          {/* 1. Small label: Blue bullet + uppercase text (10-11px, medium weight) */}
+          <div className="hero-tagline mb-2.5 flex items-center gap-2 opacity-0">
             <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#0066FF] shadow-[0_0_8px_#0066FF]" />
             <p
               className="text-[10.5px] font-medium uppercase text-white/95"
@@ -273,13 +273,13 @@ export default function MobileHero() {
             </p>
           </div>
 
-          {/* 2. Main headline: Balanced size (36-38px, weight 800, line-height 1.05) */}
+          {/* 2. Main headline: Controlled 34-38px max, 1.05 line-height, bold 800 */}
           <h1
-            className="mb-3 uppercase text-white"
+            className="mb-3.5 uppercase text-white"
             style={{
-              fontSize: "clamp(36px, 9.5vw, 38px)",
+              fontSize: "clamp(34px, 9vw, 37px)",
               lineHeight: 1.05,
-              letterSpacing: "-0.02em",
+              letterSpacing: "-0.015em",
               fontWeight: 800,
             }}
           >
@@ -290,13 +290,13 @@ export default function MobileHero() {
             </span>
           </h1>
 
-          {/* 3. Description: Clean, 13.5-14px, max-width ≈ 300px */}
+          {/* 3. Description: Clean, 13-14px, max-width 290px so it stays clear of center */}
           <p
             className="hero-description mb-6 font-normal text-white/80 opacity-0"
             style={{
               fontSize: "13.5px",
               lineHeight: 1.5,
-              maxWidth: "300px",
+              maxWidth: "290px",
             }}
           >
             We design and develop high-performance websites, mobile apps, AI
@@ -304,25 +304,25 @@ export default function MobileHero() {
             scalable digital products.
           </p>
 
-          {/* 4. Action Buttons: 24px gap from text, 12-14px gap between, 50px height */}
-          <div className="flex flex-col gap-3">
-            {/* Primary button: solid blue, fully rounded, height ~50px, padding 14px 28px */}
+          {/* 4. Action Buttons: 24px spacing from text, 14px gap, min 48px height, 14px x 28px padding */}
+          <div className="flex flex-col gap-3.5">
+            {/* Primary button: min 48px height, 14px x 28px padding, pill-shaped */}
             <button
-              className="hero-btn flex h-[50px] min-h-[50px] w-full max-w-[300px] items-center justify-center rounded-full bg-[#0066FF] px-7 text-[14px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
+              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full bg-[#0066FF] px-7 text-[14px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
             >
               Start a Project &rarr;
             </button>
 
-            {/* Secondary button: outline white border, same height and width */}
+            {/* Secondary button: exact same 48px height and width for visual consistency */}
             <button
-              className="hero-btn flex h-[50px] min-h-[50px] w-full max-w-[300px] items-center justify-center rounded-full border border-white/30 bg-transparent px-7 text-[14px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
+              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full border border-white/30 bg-transparent px-7 text-[14px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
             >
               Explore Our Work
             </button>
           </div>
 
           {/* 5. Scroll Indicator: Centered, small mouse + text (11-12px soft white) */}
-          <div className="hero-scroll mt-4 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
+          <div className="hero-scroll mt-6 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
             <div className="flex items-center gap-1.5">
               <div
                 className="flex h-[24px] w-[15px] items-start justify-center pt-[3.5px]"
