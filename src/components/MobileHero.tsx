@@ -18,10 +18,10 @@ export default function MobileHero() {
     () => {
       if (!loaderLogoRef.current || !loaderOverlayRef.current) return;
 
-      // 1. Continuous smooth 360° rotation (2.0s per full turn)
+      // 1. Continuous smooth 360° rotation (1.0s per full turn)
       rotateTweenRef.current = gsap.to(loaderLogoRef.current, {
         rotation: 360,
-        duration: 2.0,
+        duration: 1.0,
         ease: "none",
         repeat: -1,
       });
@@ -140,7 +140,7 @@ export default function MobileHero() {
           { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
           1.15
         );
-      }, 2000);
+      }, 1000);
 
       // Micro-animations: continuous bouncing chevron & mouse dot
       gsap.to(".scroll-dot", {
@@ -217,12 +217,12 @@ export default function MobileHero() {
         />
       </div>
 
-      {/* ── MAIN CONTENT WRAPPER ───────────────────────────────── */}
-      <div className="relative z-10 flex min-h-screen flex-col justify-between px-5 pb-9 pt-6">
+      {/* ── MAIN CONTENT WRAPPER (calibrated for 100dvh tall phones) ── */}
+      <div className="relative z-10 flex min-h-[100dvh] flex-col justify-between px-6 pb-7 pt-5">
 
         {/* ── TOP HEADER / NAVBAR ───────────────────────────────── */}
         <header className="hero-nav flex items-center justify-between">
-          {/* Top-left: Clean transparent CD monogram logo (28-30px height) */}
+          {/* Top-left: Clean transparent CD monogram logo (28px height) */}
           <div
             ref={targetLogoRef}
             className="relative flex items-center transition-opacity duration-150"
@@ -257,13 +257,13 @@ export default function MobileHero() {
         </header>
 
         {/* ── SPACER: Keeps person's head & monitors 100% visible & uncovered ── */}
-        <div className="flex-1 min-h-[35vh]" />
+        <div className="flex-1 min-h-[14vh] max-h-[22vh]" />
 
-        {/* ── HERO CONTENT (positioned lower, left-aligned, max-width ~290px) ── */}
-        <div className="flex flex-col pb-2">
+        {/* ── HERO CONTENT (tight, balanced vertical rhythm, thumb zone) ── */}
+        <div className="flex flex-col pb-1">
 
-          {/* 1. Small label: Blue bullet + uppercase text (10-11px, medium weight) */}
-          <div className="hero-tagline mb-2.5 flex items-center gap-2 opacity-0">
+          {/* 1. Small label: Blue dot + uppercase text (10-11px, medium weight) */}
+          <div className="hero-tagline mb-2 flex items-center gap-2 opacity-0">
             <span className="h-2 w-2 flex-shrink-0 rounded-full bg-[#0066FF] shadow-[0_0_8px_#0066FF]" />
             <p
               className="text-[10.5px] font-medium uppercase text-white/95"
@@ -273,13 +273,13 @@ export default function MobileHero() {
             </p>
           </div>
 
-          {/* 2. Main headline: Controlled 34-38px max, 1.05 line-height, bold 800 */}
+          {/* 2. Main headline: Balanced size (36-38px, weight 800, line-height 1.05) */}
           <h1
-            className="mb-3.5 uppercase text-white"
+            className="mb-3 uppercase text-white"
             style={{
-              fontSize: "clamp(34px, 9vw, 37px)",
+              fontSize: "clamp(36px, 9.5vw, 38px)",
               lineHeight: 1.05,
-              letterSpacing: "-0.015em",
+              letterSpacing: "-0.02em",
               fontWeight: 800,
             }}
           >
@@ -290,13 +290,13 @@ export default function MobileHero() {
             </span>
           </h1>
 
-          {/* 3. Description: Clean, 13-14px, max-width 290px so it stays clear of center */}
+          {/* 3. Description: Clean, 13.5-14px, max-width ≈ 300px */}
           <p
             className="hero-description mb-6 font-normal text-white/80 opacity-0"
             style={{
               fontSize: "13.5px",
               lineHeight: 1.5,
-              maxWidth: "290px",
+              maxWidth: "300px",
             }}
           >
             We design and develop high-performance websites, mobile apps, AI
@@ -304,25 +304,25 @@ export default function MobileHero() {
             scalable digital products.
           </p>
 
-          {/* 4. Action Buttons: 24px spacing from text, 14px gap, min 48px height, 14px x 28px padding */}
-          <div className="flex flex-col gap-3.5">
-            {/* Primary button: min 48px height, 14px x 28px padding, pill-shaped */}
+          {/* 4. Action Buttons: 24px gap from text, 12-14px gap between, 50px height */}
+          <div className="flex flex-col gap-3">
+            {/* Primary button: solid blue, fully rounded, height ~50px, padding 14px 28px */}
             <button
-              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full bg-[#0066FF] px-7 text-[14px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
+              className="hero-btn flex h-[50px] min-h-[50px] w-full max-w-[300px] items-center justify-center rounded-full bg-[#0066FF] px-7 text-[14px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
             >
               Start a Project &rarr;
             </button>
 
-            {/* Secondary button: exact same 48px height and width for visual consistency */}
+            {/* Secondary button: outline white border, same height and width */}
             <button
-              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full border border-white/30 bg-transparent px-7 text-[14px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
+              className="hero-btn flex h-[50px] min-h-[50px] w-full max-w-[300px] items-center justify-center rounded-full border border-white/30 bg-transparent px-7 text-[14px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
             >
               Explore Our Work
             </button>
           </div>
 
           {/* 5. Scroll Indicator: Centered, small mouse + text (11-12px soft white) */}
-          <div className="hero-scroll mt-6 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
+          <div className="hero-scroll mt-4 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
             <div className="flex items-center gap-1.5">
               <div
                 className="flex h-[24px] w-[15px] items-start justify-center pt-[3.5px]"
