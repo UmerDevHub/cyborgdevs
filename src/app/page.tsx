@@ -3,6 +3,7 @@ import DesktopHero from "@/components/DesktopHero";
 import ServicesSection from "@/components/ServicesSection";
 import FeaturedWorkSection from "@/components/FeaturedWorkSection";
 import TechnologiesSection from "@/components/TechnologiesSection";
+import AiDevelopmentSection from "@/components/AiDevelopmentSection";
 
 export default function Home() {
   return (
@@ -25,6 +26,9 @@ export default function Home() {
 
       {/* Technologies Section */}
       <TechnologiesSection />
+
+      {/* AI Development Section */}
+      <AiDevelopmentSection />
     </main>
   );
 }
