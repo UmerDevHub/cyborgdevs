@@ -4,6 +4,8 @@ import ServicesSection from "@/components/ServicesSection";
 import FeaturedWorkSection from "@/components/FeaturedWorkSection";
 import TechnologiesSection from "@/components/TechnologiesSection";
 import AiDevelopmentSection from "@/components/AiDevelopmentSection";
+import ProcessSection from "@/components/ProcessSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 
 export default function Home() {
   return (
@@ -29,6 +31,12 @@ export default function Home() {
 
       {/* AI Development Section */}
       <AiDevelopmentSection />
+
+      {/* Our Process Section */}
+      <ProcessSection />
+
+      {/* Why Choose Us & Testimonials Reviews Section */}
+      <TestimonialsSection />
     </main>
   );
 }
