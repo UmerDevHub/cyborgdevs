@@ -292,7 +292,7 @@ export default function MobileHero() {
 
           {/* 3. Description: Clean, 13-14px, max-width 290px so it stays clear of center */}
           <p
-            className="hero-description mb-5 font-normal text-white/80 opacity-0"
+            className="hero-description mb-6 font-normal text-white/80 opacity-0"
             style={{
               fontSize: "13.5px",
               lineHeight: 1.5,
@@ -304,25 +304,25 @@ export default function MobileHero() {
             scalable digital products.
           </p>
 
-          {/* 4. Action Buttons: 13-14px text, solid padding, pill-shaped */}
-          <div className="flex flex-col gap-2.5">
-            {/* Primary button */}
+          {/* 4. Action Buttons: 24px spacing from text, 14px gap, min 48px height, 14px x 28px padding */}
+          <div className="flex flex-col gap-3.5">
+            {/* Primary button: min 48px height, 14px x 28px padding, pill-shaped */}
             <button
-              className="hero-btn flex w-full max-w-[285px] items-center justify-center rounded-full bg-[#0066FF] px-6 py-3 text-[13.5px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
+              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full bg-[#0066FF] px-7 text-[14px] font-medium text-white opacity-0 shadow-[0_4px_18px_rgba(0,102,255,0.35)] transition-all hover:bg-[#0055d4] active:scale-[0.98]"
             >
               Start a Project &rarr;
             </button>
 
-            {/* Secondary button */}
+            {/* Secondary button: exact same 48px height and width for visual consistency */}
             <button
-              className="hero-btn flex w-full max-w-[285px] items-center justify-center rounded-full border border-white/30 bg-transparent px-6 py-3 text-[13.5px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
+              className="hero-btn flex h-[48px] min-h-[48px] w-full max-w-[290px] items-center justify-center rounded-full border border-white/30 bg-transparent px-7 text-[14px] font-medium text-white opacity-0 transition-all hover:border-white/50 hover:bg-white/5 active:scale-[0.98]"
             >
               Explore Our Work
             </button>
           </div>
 
           {/* 5. Scroll Indicator: Centered, small mouse + text (11-12px soft white) */}
-          <div className="hero-scroll mt-5 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
+          <div className="hero-scroll mt-6 mb-1 flex flex-col items-center justify-center gap-1 opacity-0">
             <div className="flex items-center gap-1.5">
               <div
                 className="flex h-[24px] w-[15px] items-start justify-center pt-[3.5px]"
