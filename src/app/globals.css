@@ -82,3 +82,23 @@ button:focus-visible {
   animation: borderGleam 3.8s ease-in-out infinite;
 }
 
+/* Continuous infinite marquee for trusted companies */
+@keyframes infiniteMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: infiniteMarquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
