@@ -12,7 +12,6 @@ export const NAV_LINKS = [
   { name: "Process", href: "/#process" },
   { name: "About", href: "/#about" },
   { name: "Pricing", href: "/pricing" },
-  { name: "Contact", href: "/#contact" },
 ];
 
 interface MobileDrawerProps {
@@ -70,14 +69,14 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 lg:hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed inset-0 z-[999] lg:hidden transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isOpen
           ? "opacity-100 pointer-events-auto visible"
           : "opacity-0 pointer-events-none invisible"
       }`}
     >
-      {/* Dark Deep Glass Backdrop */}
-      <div className="absolute inset-0 bg-[#02050D]/97 backdrop-blur-2xl" />
+      {/* 100% Solid Opaque Dark Backdrop — prevents any background navbar bleed-through */}
+      <div className="absolute inset-0 bg-[#02050D]" />
 
       {/* Ambient Glowing Orbs */}
       <div className="absolute top-1/4 right-0 w-80 h-80 bg-[#0066FF]/15 rounded-full blur-3xl pointer-events-none" />
@@ -85,7 +84,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
       {/* Drawer Inner Content */}
       <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8 pt-6">
-        {/* Header Row */}
+        {/* Header Row with Logo and perfectly aligned crisp Close Cross */}
         <div className="flex items-center justify-between pb-5 border-b border-white/10">
           <Link
             href="/"
@@ -103,15 +102,15 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           </Link>
           <button
             onClick={onClose}
-            className="flex items-center justify-center w-10 h-10 rounded-xl border border-white/15 bg-white/5 text-white hover:bg-white/10 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.08] hover:bg-white/[0.16] border border-white/20 text-white transition-all active:scale-95 cursor-pointer shadow-sm"
             aria-label="Close menu"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5 text-white stroke-[2.5]" />
           </button>
         </div>
 
         {/* Navigation Links with Boutique Stagger & Numbering */}
-        <nav className="flex flex-col gap-2.5 py-6 my-auto">
+        <nav className="flex flex-col gap-3 py-6 my-auto">
           {NAV_LINKS.map((link, idx) => (
             <Link
               key={link.name}
