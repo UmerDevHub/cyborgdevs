@@ -83,45 +83,6 @@ export default function TestimonialsSection() {
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const progressTweenRef = useRef<gsap.core.Tween | null>(null);
 
-  // 3.5-second auto-play cycle with visual countdown progress bar
-  const startProgressAndTimer = () => {
-    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
-    if (progressTweenRef.current) progressTweenRef.current.kill();
-
-    if (progressBarRef.current) {
-      gsap.set(progressBarRef.current, { width: "0%" });
-      progressTweenRef.current = gsap.to(progressBarRef.current, {
-        width: "100%",
-        duration: 3.5,
-        ease: "none",
-      });
-    }
-
-    autoPlayTimerRef.current = setTimeout(() => {
-      turnPageAdvanced("next", (currentIndex + 1) % reviewsData.length);
-    }, 3500);
-  };
-
-  useEffect(() => {
-    startProgressAndTimer();
-    return () => {
-      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
-      if (progressTweenRef.current) progressTweenRef.current.kill();
-    };
-  }, [currentIndex]);
-
-  // Pause on hover, resume on leave
-  const handleMouseEnter = () => {
-    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
-    if (progressTweenRef.current) progressTweenRef.current.pause();
-  };
-
-  const handleMouseLeave = () => {
-    if (progressTweenRef.current) progressTweenRef.current.resume();
-    // Restart remaining timer or start fresh
-    startProgressAndTimer();
-  };
-
   // ── ADVANCED 3D PHYSICAL BOOK PAGE CURL, FOLD & UNFOLD ──────────
   const turnPageAdvanced = (direction: "next" | "prev", nextIdx: number) => {
     if (isAnimating || !mainCardRef.current) return;
@@ -280,6 +241,45 @@ export default function TestimonialsSection() {
         0.38
       );
     }
+  };
+
+  // 3.5-second auto-play cycle with visual countdown progress bar
+  const startProgressAndTimer = () => {
+    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+    if (progressTweenRef.current) progressTweenRef.current.kill();
+
+    if (progressBarRef.current) {
+      gsap.set(progressBarRef.current, { width: "0%" });
+      progressTweenRef.current = gsap.to(progressBarRef.current, {
+        width: "100%",
+        duration: 3.5,
+        ease: "none",
+      });
+    }
+
+    autoPlayTimerRef.current = setTimeout(() => {
+      turnPageAdvanced("next", (currentIndex + 1) % reviewsData.length);
+    }, 3500);
+  };
+
+  useEffect(() => {
+    startProgressAndTimer();
+    return () => {
+      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+      if (progressTweenRef.current) progressTweenRef.current.kill();
+    };
+  }, [currentIndex]);
+
+  // Pause on hover, resume on leave
+  const handleMouseEnter = () => {
+    if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+    if (progressTweenRef.current) progressTweenRef.current.pause();
+  };
+
+  const handleMouseLeave = () => {
+    if (progressTweenRef.current) progressTweenRef.current.resume();
+    // Restart remaining timer or start fresh
+    startProgressAndTimer();
   };
 
   const handleNext = () => {

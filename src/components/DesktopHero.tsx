@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -9,10 +9,24 @@ import { ChevronDown } from "lucide-react";
 export default function DesktopHero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoaderActive, setIsLoaderActive] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const targetLogoRef = useRef<HTMLDivElement>(null);
   const loaderOverlayRef = useRef<HTMLDivElement>(null);
   const loaderLogoRef = useRef<HTMLDivElement>(null);
   const rotateTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useGSAP(
     () => {
@@ -168,6 +182,7 @@ export default function DesktopHero() {
     { name: "Work", href: "#work" },
     { name: "Process", href: "#process" },
     { name: "About", href: "#about" },
+    { name: "Pricing", href: "/pricing" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -224,14 +239,19 @@ export default function DesktopHero() {
         />
       </div>
 
-      {/* ── MAIN CONTENT CONTAINER ─────────────────────────────── */}
-      <div className="relative z-10 flex min-h-screen flex-col justify-between px-10 lg:px-16 pt-8 pb-10 max-w-[1600px] mx-auto w-full">
-
-        {/* ── TOP NAVBAR ────────────────────────────────────────── */}
-        <header className="flex items-center justify-between w-full">
+      {/* ── TOP FIXED NAVBAR (SCROLL EFFECT MATCHES PRICING NAVBAR) ─── */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? "bg-[#02050D]/85 backdrop-blur-md border-b border-white/10 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
+            : "bg-transparent py-5 lg:py-6"
+        }`}
+      >
+        <div className="max-w-[1600px] mx-auto px-10 lg:px-16 flex items-center justify-between w-full">
           {/* Top-left: CD Monogram Logo */}
           <div
             ref={targetLogoRef}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="relative flex items-center cursor-pointer transition-opacity duration-150"
             style={{ opacity: isLoaderActive ? 0 : 1 }}
           >
@@ -267,7 +287,14 @@ export default function DesktopHero() {
               Start a Project &rarr;
             </a>
           </div>
-        </header>
+        </div>
+      </header>
+
+      {/* ── MAIN CONTENT CONTAINER ─────────────────────────────── */}
+      <div className="relative z-10 flex min-h-screen flex-col justify-between px-10 lg:px-16 pt-8 pb-10 max-w-[1600px] mx-auto w-full">
+
+        {/* Top spacer to preserve layout flow */}
+        <div className="h-[36px] w-full pointer-events-none" aria-hidden="true" />
 
         {/* ── MIDDLE / HERO CONTENT (LEFT ALIGNED) ──────────────── */}
         <div className="flex flex-col justify-center my-auto pt-12 pb-8 max-w-[620px]">

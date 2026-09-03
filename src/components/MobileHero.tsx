@@ -1,18 +1,34 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowRight } from "lucide-react";
+import MobileDrawer, { HamburgerButton } from "@/components/MobileDrawer";
 
 export default function MobileHero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoaderActive, setIsLoaderActive] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const targetLogoRef = useRef<HTMLDivElement>(null);
   const loaderOverlayRef = useRef<HTMLDivElement>(null);
   const loaderLogoRef = useRef<HTMLDivElement>(null);
   const rotateTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useGSAP(
     () => {
@@ -164,6 +180,8 @@ export default function MobileHero() {
     { scope: containerRef }
   );
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <section
       ref={containerRef}
@@ -217,44 +235,58 @@ export default function MobileHero() {
         />
       </div>
 
+      {/* ── TOP FIXED NAVBAR (SCROLL EFFECT MATCHES PRICING NAVBAR) ─── */}
+      <header
+        className={`hero-nav fixed top-0 left-0 right-0 z-40 transition-all duration-300 px-5 sm:px-8 flex items-center justify-between ${
+          isScrolled
+            ? "bg-[#02050D]/85 backdrop-blur-md border-b border-white/10 py-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
+            : "bg-transparent py-5"
+        }`}
+      >
+        {/* Top-left: Clean transparent CD monogram logo (28-30px height) */}
+        <div
+          ref={targetLogoRef}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="relative flex items-center transition-opacity duration-150 cursor-pointer"
+          style={{ opacity: isLoaderActive ? 0 : 1 }}
+        >
+          <Image
+            src="/images/logo.png"
+            alt="CD Monogram Logo"
+            width={65}
+            height={28}
+            className="h-[28px] w-auto object-contain"
+            priority
+          />
+        </div>
+
+        {/* Top-right: Project pill + animated morphing Hamburger */}
+        <div className="hero-nav-items flex items-center gap-2.5 opacity-0">
+          <Link
+            href="/#contact"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/[0.08] px-3 py-1.5 text-[12px] font-medium text-white"
+          >
+            <span>Project</span>
+            <ArrowRight className="w-3 h-3 text-[#0066FF]" />
+          </Link>
+          <HamburgerButton
+            isOpen={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          />
+        </div>
+      </header>
+
+      {/* ── UNIFIED BOUTIQUE MOBILE DRAWER OVERLAY (SAME ACROSS ALL PAGES) ── */}
+      <MobileDrawer
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
+
       {/* ── MAIN CONTENT WRAPPER ───────────────────────────────── */}
       <div className="relative z-10 flex min-h-screen flex-col justify-between px-5 pb-9 pt-6">
 
-        {/* ── TOP HEADER / NAVBAR ───────────────────────────────── */}
-        <header className="hero-nav flex items-center justify-between">
-          {/* Top-left: Clean transparent CD monogram logo (28-30px height) */}
-          <div
-            ref={targetLogoRef}
-            className="relative flex items-center transition-opacity duration-150"
-            style={{ opacity: isLoaderActive ? 0 : 1 }}
-          >
-            <Image
-              src="/images/logo.png"
-              alt="CD Monogram Logo"
-              width={65}
-              height={28}
-              className="h-[28px] w-auto object-contain"
-              priority
-            />
-          </div>
-
-          {/* Top-right: MENU + hamburger icon (13px, white) */}
-          <div className="hero-nav-items flex items-center gap-2 cursor-pointer opacity-0">
-            <span
-              className="text-[13px] font-semibold uppercase tracking-[0.14em] text-white"
-            >
-              MENU
-            </span>
-            <button
-              aria-label="Open menu"
-              className="flex flex-col items-end justify-center gap-[4px] p-1"
-            >
-              <span className="block h-[2px] w-[20px] rounded-full bg-white" />
-              <span className="block h-[2px] w-[14px] rounded-full bg-white" />
-              <span className="block h-[2px] w-[20px] rounded-full bg-white" />
-            </button>
-          </div>
-        </header>
+        {/* Top spacer to preserve layout flow */}
+        <div className="h-[28px] w-full pointer-events-none" aria-hidden="true" />
 
         {/* ── SPACER: Keeps person's head & monitors 100% visible & uncovered ── */}
         <div className="flex-1 min-h-[35vh]" />
